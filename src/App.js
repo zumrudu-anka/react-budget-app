@@ -4,15 +4,19 @@ import {
   Stack
 } from "react-bootstrap";
 import BudgetCard from "./components/BudgetCard";
+import UncategorizedBudgetCard from "./components/UncategorizedBudgetCard";
 import AddBudgetModal from "./components/AddBudgetModal";
 import { useState } from "react";
-import { useBudgets } from "./contexts/BudgetContexts";
+import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "./contexts/BudgetContexts";
 import AddExpenseModal from "./components/AddExpenseModal";
+import ViewExpensesModal from "./components/ViewExpensesModal";
+import TotalBudgetCard from "./components/TotalBudgetCard";
 
 function App() {
 
   const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [viewExpensesModalBudgetId, setViewExpensesModalBudgetId] = useState();
   const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] = useState();
   const { budgets, getBudgetExpenses } = useBudgets();
 
@@ -44,11 +48,16 @@ function App() {
                 amount = {amount}
                 max = {budget.max}
                 onAddExpenseClick = {() => openAddExpenseModal(budget.id)}
+                onViewExpensesClick = {() => setViewExpensesModalBudgetId(budget.id)}
               />
             )
             
           })}
-          
+          <UncategorizedBudgetCard
+            onAddExpenseClick = {openAddExpenseModal}
+            onViewExpensesClick = {() => setViewExpensesModalBudgetId(UNCATEGORIZED_BUDGET_ID)}
+          />
+          <TotalBudgetCard/>
         </div>
       </Container>
       <AddBudgetModal show = {showAddBudgetModal} handleClose = {() => setShowAddBudgetModal(false)}/>
@@ -56,6 +65,10 @@ function App() {
         show = {showAddExpenseModal}
         handleClose = {() => setShowAddExpenseModal(false)}
         defaultBudgetId = {addExpenseModalBudgetId}
+      />
+      <ViewExpensesModal
+        budgetId = {viewExpensesModalBudgetId}
+        handleClose = {() => setViewExpensesModalBudgetId()}
       />
     </>
   )
